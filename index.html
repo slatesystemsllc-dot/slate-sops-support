@@ -2,176 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slate Systems - Support Portal</title>
+    <title>Support Portal - Slate Systems</title>
     <style>
+        :root { --navy: #152a45; --gray: #525c69; --orange: #ee7000; --white: #ffffff; --dark-bg: #0d1a2d; --card-bg: #1a2d47; --border: #2a4060; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-            min-height: 100vh;
-            line-height: 1.6;
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; }
+
+        .top-nav {
+            background: var(--navy);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--orange);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        header { text-align: center; padding: 3rem 0; border-bottom: 1px solid #1e293b; margin-bottom: 3rem; }
-        .logo { font-size: 2rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.5rem; }
-        .subtitle { color: #94a3b8; font-size: 1.1rem; }
-        .portal-badge {
-            display: inline-block;
-            background: #8b5cf6;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 1rem;
-        }
-        .section { margin-bottom: 3rem; }
-        .section-title {
-            font-size: 1.5rem;
-            color: #f8fafc;
-            margin-bottom: 1.5rem;
+        .top-nav::-webkit-scrollbar { display: none; }
+        .nav-container {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            min-width: max-content;
+            padding: 0 1rem;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 1.5rem;
-            background: #8b5cf6;
-            border-radius: 2px;
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            padding: 0.6rem 0;
         }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-        .card {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #334155;
+        .nav-logo { height: 28px; width: auto; }
+        .nav-subtitle {
+            background: var(--orange);
+            color: var(--white);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            border-color: #8b5cf6;
+        .nav-links { display: flex; gap: 0; }
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.75rem 0.9rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            opacity: 0.7;
         }
-        .card a { text-decoration: none; color: inherit; }
-        .card-title { font-size: 1.1rem; color: #f8fafc; margin-bottom: 0.5rem; font-weight: 600; }
-        .card-description { color: #94a3b8; font-size: 0.9rem; }
-        .card-meta {
+        .nav-link:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+        .nav-link.active { opacity: 1; border-bottom-color: var(--orange); }
+
+        .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+        .section { margin-bottom: 2rem; scroll-margin-top: 70px; }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--orange);
+            color: var(--orange);
+        }
+
+        .links-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .links-list a {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--white);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #334155;
-            font-size: 0.8rem;
-            color: #64748b;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s;
         }
-        .essential { background: #8b5cf6; padding: 0.25rem 0.5rem; border-radius: 4px; color: white; }
-        .urgent { background: #dc2626; padding: 0.25rem 0.5rem; border-radius: 4px; color: white; }
+        .links-list a:hover { border-color: var(--orange); }
+        .link-content { flex: 1; }
+        .link-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .link-desc { font-size: 0.8rem; color: var(--gray); }
+        .arrow { color: var(--orange); font-size: 1.2rem; margin-left: 1rem; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .badge-essential { background: var(--orange); color: white; }
+        .badge-urgent { background: #dc2626; color: white; }
+
         footer {
             text-align: center;
-            padding: 2rem;
-            color: #64748b;
-            font-size: 0.875rem;
-            border-top: 1px solid #1e293b;
-            margin-top: 3rem;
+            padding: 1.5rem;
+            color: var(--gray);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
         }
+        footer a { color: var(--orange); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">Slate Systems</div>
-            <div class="subtitle">Support Standard Operating Procedures</div>
-            <span class="portal-badge">Support Portal</span>
-        </header>
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/Slate_Systems_Logo_White.png" alt="Slate" class="nav-logo">
+                <span class="nav-subtitle">SUPPORT</span>
+            </div>
+            <div class="nav-links">
+                <a href="#essentials" class="nav-link active">Essentials</a>
+                <a href="#issues" class="nav-link">Common Issues</a>
+                <a href="#escalation" class="nav-link">Escalation</a>
+            </div>
+        </div>
+    </nav>
 
-        <main>
-            <section class="section">
-                <h2 class="section-title">Essential - Know These First</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <a href="support-faq.html">
-                            <div class="card-title">Support FAQ</div>
-                            <div class="card-description">Common client questions and standard answers - your go-to reference</div>
-                            <div class="card-meta">
-                                <span class="essential">Essential</span>
-                                <span>15 min read</span>
-                            </div>
-                        </a>
+    <main class="main">
+        <section class="section" id="essentials">
+            <h2 class="section-title">Essentials - Know These First</h2>
+            <div class="links-list">
+                <a href="support-faq.html">
+                    <div class="link-content">
+                        <div class="link-title">Support FAQ <span class="badge badge-essential">Essential</span></div>
+                        <div class="link-desc">Most common client questions and answers</div>
                     </div>
-                    <div class="card">
-                        <a href="escalation-rules.html">
-                            <div class="card-title">Escalation Rules</div>
-                            <div class="card-description">When to handle yourself vs when to escalate - critical to know</div>
-                            <div class="card-meta">
-                                <span class="urgent">Must Know</span>
-                                <span>8 min read</span>
-                            </div>
-                        </a>
+                    <span class="arrow">→</span>
+                </a>
+                <a href="app-guide.html">
+                    <div class="link-content">
+                        <div class="link-title">Lead Connector App Guide <span class="badge badge-essential">Essential</span></div>
+                        <div class="link-desc">How to help clients with the mobile app</div>
                     </div>
-                </div>
-            </section>
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </section>
 
-            <section class="section">
-                <h2 class="section-title">App & Technical Help</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <a href="app-guide.html">
-                            <div class="card-title">App Guide</div>
-                            <div class="card-description">Lead Connector app setup, usage, and troubleshooting</div>
-                            <div class="card-meta">
-                                <span>Reference</span>
-                                <span>10 min read</span>
-                            </div>
-                        </a>
+        <section class="section" id="issues">
+            <h2 class="section-title">Common Issues</h2>
+            <div class="links-list">
+                <a href="cc-decline-handling.html">
+                    <div class="link-content">
+                        <div class="link-title">CC Decline Handling <span class="badge badge-urgent">Urgent</span></div>
+                        <div class="link-desc">What to do when client payment fails</div>
                     </div>
-                </div>
-            </section>
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </section>
 
-            <section class="section">
-                <h2 class="section-title">Billing Issues</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <a href="cc-decline-handling.html">
-                            <div class="card-title">CC Decline Handling</div>
-                            <div class="card-description">Credit card failure recovery process and scripts</div>
-                            <div class="card-meta">
-                                <span>Escalate if needed</span>
-                                <span>8 min read</span>
-                            </div>
-                        </a>
+        <section class="section" id="escalation">
+            <h2 class="section-title">Escalation</h2>
+            <div class="links-list">
+                <a href="escalation-rules.html">
+                    <div class="link-content">
+                        <div class="link-title">Escalation Rules</div>
+                        <div class="link-desc">When and how to escalate issues to Dan</div>
                     </div>
-                </div>
-            </section>
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </section>
+    </main>
 
-            <section class="section">
-                <h2 class="section-title">Quick Reference</h2>
-                <div class="card-grid">
-                    <div class="card">
-                        <a href="../agents/support-agent.html">
-                            <div class="card-title">Support Agent Config</div>
-                            <div class="card-description">AI support agent configuration and behavior</div>
-                            <div class="card-meta">
-                                <span>Technical</span>
-                                <span>10 min read</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </main>
+    <footer>© 2026 Slate Systems | <a href="https://sops.slatesystems.io">Admin Portal</a></footer>
 
-        <footer>
-            <p>&copy; 2026 Slate Systems LLC. Internal use only.</p>
-            <p style="margin-top: 0.5rem;">Last updated: February 22, 2026</p>
-        </footer>
-    </div>
+    <script>
+        document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(link.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>

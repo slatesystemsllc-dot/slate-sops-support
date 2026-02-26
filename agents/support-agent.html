@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support Agent Specification - Slate Systems SOP</title>
     <style>
@@ -101,8 +100,10 @@
         <h1>Support Agent Specification</h1>
 
 <blockquote><strong>Role:</strong> Support Agent</blockquote>
-<blockquote><strong>Type:</strong> AI Agent (GHL Conversations AI / n8n + OpenClaw)</blockquote>
-<blockquote><strong>Status:</strong> SPEC - Ready for Implementation</blockquote>
+<blockquote><strong>Type:</strong> AI Agent (n8n + Claude API)</blockquote>
+<blockquote><strong>Status:</strong> LIVE - Workflow Built</blockquote>
+<blockquote><strong>Workflow ID:</strong> pY9srGq9t6CmkbD7</blockquote>
+<blockquote><strong>Webhook URL:</strong> https://n8n.slatesystems.io/webhook/support-agent</blockquote>
 
 <hr>
 
@@ -192,48 +193,43 @@ REVIEW FUNNEL:
 
 <hr>
 
-<h2>Technical Implementation</h2>
+<h2>Technical Implementation (LIVE)</h2>
 
-<h3>Option A: GHL Conversations AI (Simpler)</h3>
+<h3>n8n Workflow: SLATE - Support AI Agent</h3>
 
-<ol><li class="ordered"><strong>Setup:</strong> Settings → Conversations AI → Enable</li>
-<li class="ordered"><strong>Knowledge Base:</strong> Upload static knowledge doc</li>
-<li class="ordered"><strong>Escalation:</strong> Configure auto-tag when AI marks uncertain</li>
-<li class="ordered"><strong>Limitations:</strong></li>
-</ol>   - Less control over dynamic data access
-   - Can't call external APIs
-   - Good for MVP
+<strong>Workflow ID:</strong> <code>pY9srGq9t6CmkbD7</code>
+<strong>Server:</strong> 5.161.87.81 (Slate n8n)
+<strong>Webhook:</strong> <code>POST https://n8n.slatesystems.io/webhook/support-agent</code>
 
-<h3>Option B: n8n + OpenClaw (More Powerful)</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                     SUPPORT AI AGENT FLOW                           │
+└─────────────────────────────────────────────────────────────────────┘
 
-<pre><code>Inbound SMS/Email
-       │
-       ▼
-┌─────────────────────┐
-│ GHL Workflow        │
-│ • Check currentclient│
-│ • Extract question  │
-│ • Send to n8n       │
-└─────────────────────┘
-       │
-       ▼
-┌─────────────────────┐
-│ n8n Workflow        │
-│ • Fetch client data │
-│ • Call OpenClaw     │
-│ • Parse response    │
-│ • Send reply        │
-└─────────────────────┘
-       │
-       ▼
-┌─────────────────────┐
-│ OpenClaw Agent      │
-│ • Classify intent   │
-│ • Generate response │
-│ • Flag escalations  │
-└─────────────────────┘
+<p>GHL Inbound Message<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Support Webhook     │ ← POST from GHL workflow<br>│ (n8n webhook)       │<br>└─────────────────────┘<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Extract Request     │ ← Validates: contactId, message<br>│ Data                │<br>└─────────────────────┘<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Fetch Client Data   │ ← GET /contacts/{id} from GHL API<br>│ (HTTP Request)      │<br>└─────────────────────┘<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Prepare AI Context  │ ← Extracts custom values, tags<br>│                     │<br>└─────────────────────┘<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Generate AI         │ ← Claude API (claude-sonnet-4-20250514)<br>│ Response            │   max_tokens: 500<br>└─────────────────────┘<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Parse AI Response   │ ← Extracts: response, escalate, category<br>│                     │<br>└─────────────────────┘<br>       │<br>       ▼<br>┌─────────────────────┐<br>│ Check Escalation    │ ← IF escalate === true<br>│ (IF Node)           │<br>└─────────────────────┘<br>       │                        │<br>       ▼ (FALSE)                ▼ (TRUE)<br>┌─────────────────────┐  ┌─────────────────────┐<br>│ Send Reply          │  │ Add Escalation Tag  │<br>│ (via GHL API)       │  │ (support-escalation)│<br>└─────────────────────┘  └─────────────────────┘<br>       │                        │<br>       ▼                        ▼<br>┌─────────────────────┐  ┌─────────────────────┐<br>│ Respond Success     │  │ Prepare Notification│<br>│ (webhook response)  │  │ (for Slack/SMS)     │<br>└─────────────────────┘  └─────────────────────┘<br>                                │<br>                                ▼<br>                         ┌─────────────────────┐<br>                         │ Respond Escalated   │<br>                         │ (webhook response)  │<br>                         └─────────────────────┘<br></code></pre></p>
+
+<h3>Webhook Payload (from GHL)</h3>
+
+<pre><code>{
+  "contactId": "abc123",
+  "message": "How do I download the app?",
+  "firstName": "John",
+  "phone": "+15551234567",
+  "email": "john@example.com"
+}
 </code></pre>
 
+<h3>Credentials Required</h3>
+
+<table><thead><tr><th>Node</th><th>Credential</th><th>Setup</th></tr></thead><tbody><tr><td>Fetch Client Data</td><td>GHL API (Header Auth)</td><td><code>Authorization: Bearer {API_KEY}</code></td></tr><tr><td>Generate AI Response</td><td>Anthropic API</td><td>Uses <code>$env.ANTHROPIC_API_KEY</code></td></tr><tr><td>Send Reply</td><td>GHL API (Header Auth)</td><td>Same as Fetch Client</td></tr><tr><td>Add Escalation Tag</td><td>GHL API (Header Auth)</td><td>Same as Fetch Client</td></tr></tbody></table>
+<h3>To Activate</h3>
+
+<ol><li class="ordered">Open n8n: https://n8n.slatesystems.io</li>
+<li class="ordered">Find workflow: "SLATE - Support AI Agent"</li>
+<li class="ordered">Configure credentials for HTTP Request nodes</li>
+<li class="ordered">Set environment variable: <code>ANTHROPIC_API_KEY</code></li>
+<li class="ordered">Toggle workflow to Active</li>
+<li class="ordered">Create GHL workflow to trigger webhook on inbound messages</li>
+</ol>
 <hr>
 
 <h2>Agent Prompt (OpenClaw)</h2>
@@ -294,16 +290,43 @@ REVIEW FUNNEL:
 <table><thead><tr><th>System</th><th>Integration</th><th>Purpose</th></tr></thead><tbody><tr><td>GHL</td><td>Conversations AI / Workflow</td><td>Trigger + reply</td></tr><tr><td>n8n</td><td>Webhook receiver</td><td>Process messages</td></tr><tr><td>OpenClaw</td><td>API call</td><td>Generate responses</td></tr><tr><td>Baserow</td><td>Data lookup</td><td>Client history</td></tr><tr><td>Slack</td><td>Notification</td><td>Escalation alerts</td></tr></tbody></table>
 <hr>
 
+<h2>Getting the Most Out of This Agent</h2>
+
+<h3>Before Going Live</h3>
+
+<ol><li class="ordered"><strong>Test with real questions</strong> — Send sample messages through the webhook manually</li>
+<li class="ordered"><strong>Review AI responses</strong> — Check that escalations trigger correctly</li>
+<li class="ordered"><strong>Set up notifications</strong> — Connect Prepare Notification node to Slack or SMS</li>
+</ol>
+<h3>Ongoing Optimization</h3>
+
+<ul><li><strong>Weekly review:</strong> Look at escalated conversations, identify patterns</li>
+<li><strong>Add to prompt:</strong> If AI keeps escalating the same type of question, add answer to prompt</li>
+<li><strong>Track metrics:</strong> Monitor auto-resolution rate (target: >60%)</li>
+<li><strong>Client feedback:</strong> If clients complain about AI responses, review and adjust</li>
+</ul>
+<h3>Common Adjustments</h3>
+
+<table><thead><tr><th>Issue</th><th>Fix</th></tr></thead><tbody><tr><td>AI too verbose</td><td>Reduce max_tokens (currently 500)</td></tr><tr><td>AI escalates too much</td><td>Add more examples to "COMMON ANSWERS" in prompt</td></tr><tr><td>AI doesn't escalate enough</td><td>Add keywords to escalation rules in prompt</td></tr><tr><td>Wrong tone</td><td>Adjust ROLE section in prompt</td></tr></tbody></table>
+<h3>Troubleshooting</h3>
+
+<ol><li class="ordered"><strong>No response sent:</strong> Check GHL API credentials, verify contactId exists</li>
+<li class="ordered"><strong>AI errors:</strong> Check ANTHROPIC_API_KEY env var, verify API quota</li>
+<li class="ordered"><strong>Wrong client data:</strong> Check custom field keys match GHL setup</li>
+</ol>
+<hr>
+
 <h2>Files & References</h2>
 
-<ul><li>Client custom values: <code>slate-content-generator-v2.md</code></li>
+<ul><li>Support FAQ: <code>support/support-faq.md</code></li>
+<li>Escalation Rules: <code>support/escalation-rules.md</code></li>
+<li>Client custom values: <code>slate-content-generator-v2.md</code></li>
 <li>GHL workflow patterns: <code>slate-operations.md</code></li>
-<li>OpenClaw setup: <code>~/mcp-servers/contexts/openclaw.md</code></li>
 </ul>
 <hr>
 
-<em>Last updated: Feb 16, 2026</em>
-<em>Version: 1.0 - Initial Specification</em>
+<em>Last updated: Feb 22, 2026</em>
+<em>Version: 2.0 - n8n Workflow Built</em>
 
         <footer>
             <p>&copy; 2026 Slate Systems LLC. Internal use only.</p>
