@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Program - Support SOP</title>
+    <style>
+        :root { --navy: #152a45; --orange: #ee7000; --white: #ffffff; --green: #22c55e; --blue: #3b82f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; padding: 2rem; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .back-link { color: var(--orange); text-decoration: none; font-size: 0.9rem; }
+        h1 { color: var(--navy); font-size: 1.75rem; margin: 1rem 0 0.5rem; }
+        .meta { color: #64748b; font-size: 0.875rem; margin-bottom: 2rem; }
+        h2 { color: var(--navy); font-size: 1.25rem; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--orange); }
+        h3 { color: var(--orange); font-size: 1rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .card { background: white; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-title { font-weight: 600; color: var(--navy); margin-bottom: 0.75rem; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: var(--navy); color: white; }
+        code { background: #e2e8f0; padding: 0.125rem 0.375rem; border-radius: 4px; font-size: 0.875rem; }
+        .important { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+        .success { background: #dcfce7; border-left: 4px solid var(--green); padding: 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+        .info { background: #dbeafe; border-left: 4px solid var(--blue); padding: 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+        .step { display: flex; gap: 1rem; margin: 1rem 0; padding: 1rem; background: white; border-radius: 8px; border-left: 4px solid var(--orange); }
+        .step-num { background: var(--orange); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; flex-shrink: 0; }
+        .step-content { flex: 1; }
+        .step-title { font-weight: 600; color: var(--navy); }
+        ul, ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        li { margin: 0.25rem 0; }
+        .math-box { background: #f0fdf4; border: 2px solid var(--green); border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Support SOPs</a>
+        <h1>Referral Partner Program SOP</h1>
+        <p class="meta">Support SOP | Last updated: February 28, 2026 | Version 1.0</p>
+
+        <div class="success">
+            <strong>$97/month per referral, recurring.</strong> Clients earn passive income as long as their referrals stay active.
+        </div>
+
+        <h2>Program Overview</h2>
+        <p>After 35 days as a client, they receive automated SMS inviting them to refer other contractors. For each referral that becomes a Slate client, they earn $97/month - recurring for as long as that client stays.</p>
+
+        <div class="math-box">
+            <h3 style="margin-top:0">Payout Math for Clients</h3>
+            <table>
+                <tr><th>Referrals</th><th>Monthly</th><th>Yearly</th><th>Result</th></tr>
+                <tr><td>1</td><td>$97</td><td>$1,164</td><td>Easy passive income</td></tr>
+                <tr><td>3</td><td>$291</td><td>$3,492</td><td>Pays for their Slate ($297)</td></tr>
+                <tr><td>5</td><td>$485</td><td>$5,820</td><td>Profit on top of free Slate</td></tr>
+                <tr><td>10</td><td>$970</td><td>$11,640</td><td>Serious side income</td></tr>
+            </table>
+        </div>
+
+        <h2>Automation Flows</h2>
+
+        <div class="card">
+            <div class="card-title">Flow 7: Review Request (Day 30)</div>
+            <p>Asks clients to leave a Google review. Includes link to reviews.slatesystems.io. If they reply "REVIEWED", triggers Flow 7.5.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Flow 7.5: Review Coupon Handler</div>
+            <p>Triggers on "Customer Replied" containing "REVIEWED". Sends $25 discount code (THANKU) for next month.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Flow 8: Referral Partner Nurture (Day 35)</div>
+            <p>5 SMS over 21 days pitching the referral program. Asks client to reply "YES" if interested.</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Flow 8.5: Referral YES Handler</div>
+            <p>Triggers on "Customer Replied" containing "YES" + has <code>currentclient</code> tag + doesn't have <code>referral-partner-active</code>. Sends referral link, tags as <code>referral-partner-active</code>.</p>
+        </div>
+
+        <h2>Referral Link</h2>
+
+        <div class="info">
+            <strong>Format:</strong> <code>https://refer.slatesystems.io?ref={{contact.id}}</code>
+            <p style="margin-top:0.5rem;margin-bottom:0">GHL Custom Value: <code>{{custom_values.slate_referral_signup_link}}</code></p>
+        </div>
+
+        <h3>Flow</h3>
+        <ol>
+            <li>Client shares their unique referral link</li>
+            <li>Referred person clicks → lands on refer.slatesystems.io</li>
+            <li>CTA goes to funnel: <code>slatesystems.io/referral-book-now?referrer=CONTACT_ID</code></li>
+            <li>They book a call → referrer param captured in GHL</li>
+            <li>If they close → link referrer in tracking, pay $97/month</li>
+        </ol>
+
+        <h2>When Client Replies "YES"</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Flow 8.5 auto-triggers</div>
+                <p>Sends referral link SMS, adds <code>referral-partner-active</code> tag, removes from Flow 8 nurture.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">Add to Baserow (Manual)</div>
+                <p>Add partner to Baserow Database 254, Table 952 (Partners). Include: Name, Email, Phone, GHL Contact ID, PayPal Email.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">Get payment details</div>
+                <p>Reply asking for PayPal email for monthly payouts.</p>
+            </div>
+        </div>
+
+        <h2>When Referral Books a Call</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Check referrer param in GHL</div>
+                <p>New contact should have referrer field populated with the partner's contact ID.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">On sales call, confirm</div>
+                <p>Ask "Who referred you?" to double-check.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">If they close → Track in Baserow</div>
+                <p>Add to Table 953 (Referrals): Client name, GHL ID, link to Partner, signup date, status "Active", monthly rate $97.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">Tag the referrer</div>
+                <p>Add <code>has-active-referral</code> tag to the partner's GHL contact. Add note: "Referred: [Client Name] - Started [Date]"</p>
+            </div>
+        </div>
+
+        <h2>Monthly Payout Process (1st of Month)</h2>
+
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Pull Baserow report</div>
+                <p>Table 952 (Partners) → filter Status = "Active"</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">For each partner, check referrals</div>
+                <p>Table 953 (Referrals) → filter by Partner, Status = "Active"</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">Verify in GHL</div>
+                <p>Confirm each referred client still has <code>currentclient</code> tag (hasn't churned)</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">Calculate & pay</div>
+                <p>Active referrals × $97 = payout. Send via PayPal.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <div class="step-title">Record payout</div>
+                <p>Add to Table 954 (Monthly Payouts): Month, Partner, count, amount, status "Paid", date, transaction ID.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+                <div class="step-title">Notify partner</div>
+                <p>SMS: "Your referral payout for [Month]: $[Amount] sent! Thanks for spreading the word."</p>
+            </div>
+        </div>
+
+        <h2>When Referred Client Churns</h2>
+
+        <div class="important">
+            <strong>Stop paying for that referral immediately.</strong>
+            <ol style="margin-top:0.5rem">
+                <li>Update Baserow Table 953: Set Status to "Churned", add Churn Date</li>
+                <li>Next month's payout automatically excludes them</li>
+                <li>If partner has no more active referrals, remove <code>has-active-referral</code> tag</li>
+            </ol>
+        </div>
+
+        <h2>GHL Tags Reference</h2>
+
+        <table>
+            <tr><th>Tag</th><th>Meaning</th></tr>
+            <tr><td><code>referral-partner-active</code></td><td>Client opted in to referral program</td></tr>
+            <tr><td><code>referral-not-interested</code></td><td>Client declined (replied NO or similar)</td></tr>
+            <tr><td><code>referral-nurture-complete</code></td><td>Completed Flow 8 without responding</td></tr>
+            <tr><td><code>has-active-referral</code></td><td>Has at least one paying referral</td></tr>
+        </table>
+
+        <h2>Key Links</h2>
+
+        <table>
+            <tr><th>Resource</th><th>URL</th></tr>
+            <tr><td>Referral Landing Page</td><td><a href="https://refer.slatesystems.io">refer.slatesystems.io</a></td></tr>
+            <tr><td>Review Thank You Page</td><td><a href="https://reviews.slatesystems.io">reviews.slatesystems.io</a></td></tr>
+            <tr><td>Referral Funnel (VSL + Booking)</td><td><a href="https://slatesystems.io/referral-book-now">slatesystems.io/referral-book-now</a></td></tr>
+            <tr><td>Baserow Tracking</td><td>Database 254 (Tables 952, 953, 954)</td></tr>
+            <tr><td>Wiki Documentation</td><td><a href="https://wiki.slatesystems.io/product/referral-program.html">wiki.slatesystems.io</a></td></tr>
+        </table>
+    </div>
+</body>
+</html>
